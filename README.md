@@ -1,7 +1,7 @@
 ﻿Audit Azure subscription RBAC assignments
 =========================================
 
-            
+This version use Az Powershell instead of AzureRM.Resources!
 
 If you need to audit/log Azure permissions, this is it. I created this script to help perform a RBAC audit for a Azure subscription. This script resolves all RBAC assignments, then expand every group to retain only resolved users. 
 
@@ -24,12 +24,12 @@ Usage
 PowerShell
 Edit|Remove
 powershell
-Connect-AzureRmAccount
+Connect-AzAccount
 
-Set-AzureRmContext -Subscription 'Your Subscription'
+Set-AzContext -Subscription "xxxx-xxxx-xxxx-xxxx"
 
 # Perform an audit grouped by users
-$rbacAudit = Invoke-AzureRmSubscriptionRBACAudit.ps1 
+$rbacAudit = Invoke-AzureRmSubscriptionRBACAudit.ps1
 
 #output the result as-is
 $rbacAudit
@@ -79,9 +79,9 @@ $rbacAudit | ConvertTo-Json -Depth 5
     },
     ...]
 
-Connect-AzureRmAccount 
- 
-Set-AzureRmContext -Subscription 'Your Subscription' 
+Connect-AzAccount
+
+Set-AzContext -Subscription "xxxx-xxxx-xxxx-xxxx"
  
 # Perform an audit grouped by users 
 $rbacAudit = Invoke-AzureRmSubscriptionRBACAudit.ps1  
@@ -138,9 +138,5 @@ $rbacAudit | ConvertTo-Json -Depth 5 
 
 Requirements
 
-Tested with AzureRM.Resources Version 5.x, & 6.x
-
-
-        
-    
-TechNet gallery is retiring! This script was migrated from TechNet script center to GitHub by Microsoft Azure Automation product group. All the Script Center fields like Rating, RatingCount and DownloadCount have been carried over to Github as-is for the migrated scripts only. Note : The Script Center fields will not be applicable for the new repositories created in Github & hence those fields will not show up for new Github repositories.
+T̶e̶s̶t̶e̶d̶ ̶w̶i̶t̶h̶ ̶A̶z̶u̶r̶e̶R̶M̶.̶R̶e̶s̶o̶u̶r̶c̶e̶s̶ ̶V̶e̶r̶s̶i̶o̶n̶ ̶5̶.̶x̶,̶ ̶&̶ ̶6̶.̶x̶
+Tested with Az Powershell 7.2.0

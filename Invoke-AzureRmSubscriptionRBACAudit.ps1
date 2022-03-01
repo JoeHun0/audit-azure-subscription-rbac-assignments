@@ -1,22 +1,22 @@
-﻿#requires -Version 3.0 -Modules AzureRM.Resources
+﻿#requires -Version x -Modules Az PowerShell
 param(
     [switch]
     $GroupRolesByUser
 )
 $ErrorActionPreference = 'Stop'
 
-function Resolve-AzureAdGroupMembers 
+function Resolve-AzureAdGroupMembers
 {
     param(
         [guid]
         $GroupObjectId,
-        $GroupList = (Get-AzureRmADGroup)
+        $GroupList = (Get-AzADGroup)
     )
-    
+
     $VerbosePreference = 'continue'
     Write-Verbose -Message ('Resolving {0}' -f $GroupObjectId)
     $group = $GroupList | Where-Object -Property Id -EQ -Value $GroupObjectId
-    $groupMembers = Get-AzureRmADGroupMember -GroupObjectId $GroupObjectId
+    $groupMembers = Get-AzADGroupMember -GroupObjectId $GroupObjectId
     Write-Verbose -Message ('Found members {0}' -f ($groupMembers.DisplayName -join ', '))
     $parentGroup = @{
         Id          = $group.Id
@@ -31,17 +31,17 @@ function Resolve-AzureAdGroupMembers
     $groupMembers |
     Where-Object -Property type -EQ -Value Group |
     ForEach-Object -Process {
-        Resolve-AzureAdGroupMembers -GroupObjectId $_.Id -GroupList $GroupList 
+        Resolve-AzureAdGroupMembers -GroupObjectId $_.Id -GroupList $GroupList
     }
 }
 
-$roleAssignments = Get-AzureRmRoleAssignment -IncludeClassicAdministrators
+$roleAssignments = Get-AzRoleAssignment -IncludeClassicAdministrators
 
 $members = $roleAssignments | ForEach-Object -Process {
     Write-Verbose -Message ('Processing Assignment {0}' -f $_.RoleDefinitionName)
     $roleAssignment = $_
-    
-    if($roleAssignment.ObjectType -eq 'Group') 
+
+    if($roleAssignment.ObjectType -eq 'Group')
     {
         Resolve-AzureAdGroupMembers -GroupObjectId $roleAssignment.ObjectId `
         | Select-Object -Property Id,
@@ -57,23 +57,23 @@ $members = $roleAssignments | ForEach-Object -Process {
                 Expression = { $roleAssignment.CanDelegate }
             }
     }
-    else 
+    else
     {
         $roleAssignment | Select-Object -Property @{
                 Name       = 'Id'
                 Expression = { $_.ObjectId }
             },
-            DisplayName, 
+            DisplayName,
             @{
                 Name       = 'RoleDefinitionName'
                 Expression = { $roleAssignment.RoleDefinitionName }
             },
-            Scope, 
+            Scope,
             CanDelegate
     }
 }
 
-if($GroupRolesByUser) 
+if($GroupRolesByUser)
 {
     $members |
     Sort-Object -Property DisplayName, RoleDefinitionName `
@@ -88,7 +88,7 @@ if($GroupRolesByUser)
         },
         ParentGroup
 }
-else 
+else
 {
     $members
 }
