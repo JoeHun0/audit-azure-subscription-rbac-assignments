@@ -138,5 +138,4 @@ $rbacAudit | ConvertTo-Json -Depth 5 
 
 Requirements
 
-T̶e̶s̶t̶e̶d̶ ̶w̶i̶t̶h̶ ̶A̶z̶u̶r̶e̶R̶M̶.̶R̶e̶s̶o̶u̶r̶c̶e̶s̶ ̶V̶e̶r̶s̶i̶o̶n̶ ̶5̶.̶x̶,̶ ̶&̶ ̶6̶.̶x̶
 Tested with Az Powershell 7.2.0
